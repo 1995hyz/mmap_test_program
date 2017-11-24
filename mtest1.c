@@ -9,7 +9,7 @@
 
 void handlerSegV();
 void handlerBus();
-void handlerKill();
+void handlerSys();
 void handlerAbrt();
 void handlerIll();
 void runHandler();
@@ -23,7 +23,7 @@ char buf[2]={'a','\0'};
 void runHandler(){
 	signal(SIGSEGV,handlerSegV);
 	signal(SIGBUS,handlerBus);
-	signal(SIGKILL,handlerKill);
+	signal(SIGSYS,handlerSys);
 	signal(SIGABRT,handlerAbrt);
 	signal(SIGILL,handlerIll);
 }
@@ -38,9 +38,9 @@ void handlerBus(){
 	exit(10);
 }
 
-void handlerKill(){
-	fprintf(stderr,"Signal SIGKILL Received\n");
-	exit(9);		//??????
+void handlerSys(){
+	fprintf(stderr,"Signal SIGSYS Received\n");
+	exit(12);		
 }
 
 void handlerAbrt(){
