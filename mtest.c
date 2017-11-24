@@ -96,12 +96,7 @@ void mtest2(int a){
 		fprintf(stderr,"Map Region Error: %s\n",strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	//write(fd2,"a",sizeof (char));
 	memcpy(addr,buf,strlen(buf));
-	/*if((lseek(fd2,offset,SEEK_SET))<0){		//Reset file offset to 0
-		fprintf(stderr,"Reset mtext.txt Offset Error: %s\n",strerror(errno));
-		exit(EXIT_FAILURE);
-	}*/
 	read(fd2,buf,sizeof (char));
 	if(!(memcmp(buf,"a",sizeof (char)))){
 		fprintf(stderr,"Byte Has Changed\n");
