@@ -157,8 +157,7 @@ void mtest4(int b){
 		remove("./mtext.txt");
 		exit(EXIT_FAILURE);	
 	}
-	strcat(buf4,"*");
-	memcpy(addr,buf4,strlen(buf4));
+	memcpy(addr+originalSize,"*",sizeof(char));
 	if(b==4){
 		if(fstat(fd4,&testFile)<0){
 			fprintf(stderr,"Uable to stat mtext.txt, Error: %s\n",strerror(errno));
@@ -167,10 +166,12 @@ void mtest4(int b){
 		}
 		changedSize=(int)testFile.st_size;
 		if(changedSize=originalSize){
+			fprintf(stderr,"File Size remains the Same\n");
 			remove("./mtext.txt");
 			exit(1);
 		}
 		else{
+			fprintf(stderr,"File Size Has Changed\n");
 			remove("./mtext.txt");
 			exit(0);
 		}
@@ -185,10 +186,12 @@ void mtest4(int b){
 		lseek(fd4,offset,SEEK_SET);
 		read(fd4,bufComp,sizeof(char));
 		if(strncmp(bufComp,"*",sizeof(char))==0){
+			fprintf(stderr,"Byte beyond shows up in the File\n");
 			remove("./mtext.txt");
 			exit(0);
 		}
 		else{	
+			fprintf(stderr,"Byte beyond EOF doesn't Show up in the File\n");	
 			remove("./mtext.txt");
 			exit(1);
 		}
@@ -196,7 +199,7 @@ void mtest4(int b){
 }
 
 void mtest6(){
-	char buf6[5100];
+	char buf6[64];
 	char readBuf[2]={'\0','\0'};
 	int fd6=0;
 	if(!(fd6=open("./mtext.txt",O_RDWR|O_CREAT|O_TRUNC,0666))){
@@ -213,10 +216,10 @@ void mtest6(){
 		exit(EXIT_FAILURE);
 	}
 	runHandler();
-	memcpy(buf6,addr,64*sizeof(char));
-	fprintf(stderr,"A Byte that beyond EOF is %x\n",buf6[50]);
-	memcpy(buf6,addr,5000*sizeof(char));
-	fprintf(stderr,"A Byte that beyond EOF is %x\n",buf6[4098]);
+	memcpy(&buf6[0],addr+300,sizeof(char));		//Write Beyond EOF but still in One Page
+	fprintf(stderr,"A Byte that beyond EOF is %x\n",buf6[0]);
+	memcpy(&buf6[0],addr+5000,sizeof(char));	//Write in the Following Page
+	fprintf(stderr,"A Byte that beyond EOF is %x\n",buf6[0]);
 	remove("./mtext.txt");
 	exit(0);
 }
